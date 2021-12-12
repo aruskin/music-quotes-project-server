@@ -1,4 +1,4 @@
-const userDao = require("../daos/users-dao")
+const userDao = require('../daos/users-dao')
 
 module.exports = (app) => {
 
@@ -7,7 +7,7 @@ module.exports = (app) => {
         userDao.findUserByUsername(credentials.username)
             .then((actualUser) => {
                 if(actualUser) {
-                    res.send("0")
+                    res.send('0')
                 } else {
                     userDao.createUser(credentials)
                         .then((newUser) => {
@@ -26,16 +26,16 @@ module.exports = (app) => {
                     req.session['profile'] = actualUser;
                     res.send(actualUser)
                 } else {
-                    res.send("0")
+                    res.send('0')
                 }
             })
     }
     
     const profile = (req, res) => {
-        if(req.session["profile"]){
-            res.send(req.session["profile"])
+        if(req.session['profile']){
+            res.send(req.session['profile'])
         } else {
-            res.send("0")
+            res.send('0')
         }
     }
 
@@ -45,7 +45,7 @@ module.exports = (app) => {
             if(actualUser) {
                 res.send(actualUser)
             } else {
-                res.send("0")
+                res.send('0')
             }
          });
     }
@@ -57,18 +57,20 @@ module.exports = (app) => {
 
     const resetPassword = (req, res) => {
         const currentUser = req.session['profile'];
-        const updatedUser = {
-            ...currentUser,
-            password: req.body['newPassword']
-        };
-        userDao.updateUser(currentUser._id, updatedUser)
-            .then((updateStatus) => res.send(updateStatus));
+        if(currentUser){
+            const updatedUser = {
+                ...currentUser,
+                password: req.body['newPassword']};
+                userDao.updateUser(updatedUser._id, updatedUser)
+                     .then((updateStatus) => res.send(updateStatus));
+        } else {
+            res.send({error: 'Cannot update password if not logged in'})
+        }
     }
 
     const findAllUsers = (req, res) =>
         userDao.findAllUsers()
             .then(users => res.json(users))
-
 
     async function updateUserRole(req, res){
         const currentUser = req.session['profile'];
@@ -85,12 +87,12 @@ module.exports = (app) => {
         }
     }
     
-    app.post("/api/users/profile", profile);
-    app.post("/api/users/register", register);
-    app.post("/api/users/login", login);
-    app.get("/api/users/:name", findUserByName);
+    app.post('/api/users/profile', profile);
+    app.post('/api/users/register', register);
+    app.post('/api/users/login', login);
+    app.get('/api/users/:name', findUserByName);
     app.get('/api/users', findAllUsers);
-    app.post("/api/users/logout", logout);
-    app.post("/api/users/reset", resetPassword);
-    app.put("/api/users/update-role", updateUserRole);
+    app.post('/api/users/logout', logout);
+    app.put('/api/users/reset', resetPassword);
+    app.put('/api/users/update-role', updateUserRole);
 }
