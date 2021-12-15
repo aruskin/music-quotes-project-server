@@ -13,7 +13,7 @@ module.exports = (app) => {
                         .then((newUser) => {
                             req.session['profile'] = newUser;
                             res.json(newUser)
-                        })
+                        });
                 }
             })
     }
@@ -31,13 +31,8 @@ module.exports = (app) => {
             })
     }
     
-    const profile = (req, res) => {
-        if(req.session['profile']){
-            res.send(req.session['profile'])
-        } else {
-            res.send('0')
-        }
-    }
+    const profile = (req, res) =>
+        res.json(req.session['profile']);
 
     const findUserByName = (req, res) => {
        userDao.findUserByUsername(req.params.name)
@@ -51,8 +46,7 @@ module.exports = (app) => {
     }
 
     const logout = (req, res) => {
-        req.session.destroy();
-        res.sendStatus(200);
+        res.send(req.session.destroy());
     }
 
     const resetPassword = (req, res) => {

@@ -65,10 +65,6 @@ module.exports = (app) => {
         }else{
             res.send({error: 'Insufficient permissions to submit quote'});
         }
-
-
-
-
     }
 
     async function deleteQuote(req, res){

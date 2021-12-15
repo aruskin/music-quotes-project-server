@@ -1,36 +1,38 @@
+const CONSTANTS = require('./consts');
 const express = require('express')
-const app = express()
+const app = express();
 
-const bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+// Configures CORS
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin',
+        CONSTANTS.CLIENT_URL);
+    res.header("Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods",
+        "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+});
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 const session = require('express-session')
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    // cookie: { secure: true }
-}))
+    cookie: {}
+}));
 
 const mongoose = require('mongoose');
 mongoose.connect(
-    'mongodb://localhost:27017/webdev'
+     CONSTANTS.MONGODB_URL
     ,{useNewUrlParser: true, useUnifiedTopology: true});
 
-// Configures CORS
-app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header('Access-Control-Allow-Headers',
-        'Content-Type, X-Requested-With, Origin');
-    res.header('Access-Control-Allow-Methods',
-        'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.header("Access-Control-Allow-Credentials", "true");
-    next();
-});
+require('./controllers/users-controller')(app);
+require('./controllers/quotes-controller')(app);
+require('./controllers/artists-controller')(app);
 
-require('./controllers/users-controller')(app)
-require('./controllers/quotes-controller')(app)
-require('./controllers/artists-controller')(app)
-
-app.listen(4000)
+app.listen(process.env.PORT || 4000);
