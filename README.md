@@ -1,1 +1,1 @@
-Server for final project for Northeastern University's Web Development course (CS 4550)
+Server for final project for Northeastern University's Web Development course (CS 4550). The code for the web application can be found in the [music-quotes-project repository](https://github.com/aruskin/music-quotes-project).
