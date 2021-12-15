@@ -27,7 +27,10 @@ const usersSchema = mongoose.Schema({
         type: Number,
         default: 0,
         min: 0,
-        required: true}
+        required: true},
+    bannedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'},
+    banReason: String,
+    adminContact: String
 }, {collection: "users"});
 
 module.exports = usersSchema;
